@@ -4,8 +4,8 @@ namespace FitnessUserAPI.Helpers
 {
    public class CalorieCalculator
    {
-      public AddUserRequest userDetails;
-      public CalorieCalculator( AddUserRequest userDetails )
+      public UserForm userDetails;
+      public CalorieCalculator( UserForm userDetails )
       {
          this.userDetails = userDetails;
       }

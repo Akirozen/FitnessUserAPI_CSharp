@@ -51,7 +51,7 @@ namespace FitnessUserAPI.Controllers
       }
 
       [HttpPost( Name = "AddFitnessUsers" )]
-      public async Task<IActionResult> AddUser( AddUserRequest addUserRequest )
+      public async Task<IActionResult> AddUser( UserForm addUserRequest )
       {
          var (FirstName, LastName, Age, Gender, Height, Weight, IsTrainer) = addUserRequest;
 

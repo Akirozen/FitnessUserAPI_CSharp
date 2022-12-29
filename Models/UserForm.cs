@@ -1,6 +1,6 @@
 ﻿namespace FitnessUserAPI.Models
 {
-   public class AddUserRequest
+   public class UserForm
    {
       public string FirstName { get; set; }
       public string LastName { get; set; }
