@@ -33,27 +33,30 @@ namespace FitnessUserAPI.Controllers
       public async Task<IActionResult> AddUser( AddUserRequest addUserRequest )
       {
 
+         var (FirstName, LastName, Age, Gender, Height, Weight, IsTrainer) = addUserRequest;
+
          double calories;
-         if ( addUserRequest.Gender == "Male" )
+
+         if ( Gender == "Male" )
          {
-            calories = 66.5 + ( 13.75 * addUserRequest.Weight ) + ( 5.003 * addUserRequest.Height ) - ( 6.75 * addUserRequest.Age );
+            calories = 66.5 + ( 13.75 * Weight ) + ( 5.003 * Height ) - ( 6.75 * Age );
          }
          else
          {
-            calories = 655.1 + ( 9.563 * addUserRequest.Weight ) + ( 1.805 * addUserRequest.Height ) - ( 4.676 * addUserRequest.Age );
+            calories = 655.1 + ( 9.563 * Weight ) + ( 1.805 * Height ) - ( 4.676 * Age );
          }
 
          var user = new User()
 
          {
             Id = Guid.NewGuid(),
-            FirstName = addUserRequest.FirstName,
-            LastName = addUserRequest.LastName,
-            Age = addUserRequest.Age,
-            Gender = addUserRequest.Gender,
-            Height = addUserRequest.Height,
-            Weight = addUserRequest.Weight,
-            IsTrainer = addUserRequest.IsTrainer,
+            FirstName = FirstName,
+            LastName = LastName,
+            Age = Age,
+            Gender = Gender,
+            Height = Height,
+            Weight = Weight,
+            IsTrainer = IsTrainer,
             DailyCalories = calories,
          };
          try
