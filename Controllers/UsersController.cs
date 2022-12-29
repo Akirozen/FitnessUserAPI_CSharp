@@ -1,4 +1,5 @@
 ﻿using FitnessUserAPI.Data;
+using FitnessUserAPI.Helpers;
 using FitnessUserAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,30 +22,42 @@ namespace FitnessUserAPI.Controllers
          try
          {
             return Ok( await dbContext.Users.ToListAsync() );
+         }
+         catch ( Exception ex )
+         {
+            return BadRequest( ex );
+         }
+      }
+
+      [HttpGet]
+      [Route( "{id:guid}" )]
+      public async Task<IActionResult> GetUser( [FromRoute] Guid id )
+      {
+         try
+         {
+            var user = await dbContext.Users.FindAsync( id );
+
+            if ( user == null )
+            {
+               return NotFound();
+            }
+            return Ok( user );
 
          }
          catch ( Exception ex )
          {
-            return ( IActionResult ) ex;
+            return BadRequest( ex );
          }
       }
 
-      [HttpPost]
+      [HttpPost( Name = "AddFitnessUsers" )]
       public async Task<IActionResult> AddUser( AddUserRequest addUserRequest )
       {
-
          var (FirstName, LastName, Age, Gender, Height, Weight, IsTrainer) = addUserRequest;
 
-         double calories;
+         var calorieCalculate = new CalorieCalculator( addUserRequest );
 
-         if ( Gender == "Male" )
-         {
-            calories = 66.5 + ( 13.75 * Weight ) + ( 5.003 * Height ) - ( 6.75 * Age );
-         }
-         else
-         {
-            calories = 655.1 + ( 9.563 * Weight ) + ( 1.805 * Height ) - ( 4.676 * Age );
-         }
+         double calories = calorieCalculate.Calculate();
 
          var user = new User()
 
@@ -59,20 +72,41 @@ namespace FitnessUserAPI.Controllers
             IsTrainer = IsTrainer,
             DailyCalories = calories,
          };
+
          try
          {
-
             await dbContext.Users.AddAsync( user );
             await dbContext.SaveChangesAsync();
             return Ok( user );
          }
          catch ( Exception ex )
          {
-            return ( IActionResult ) ex;
+            return BadRequest( ex );
          }
 
       }
 
+      [HttpDelete]
+      [Route( "{id:guid}" )]
+      public async Task<IActionResult> DeleteUser( [FromRoute] Guid id )
+      {
+         try
+         {
+            var user = await dbContext.Users.FindAsync( id );
 
+            if ( user == null )
+            {
+               return NotFound();
+            };
+
+            dbContext.Remove( user );
+            await dbContext.SaveChangesAsync();
+            return Ok( user );
+         }
+         catch ( Exception ex )
+         {
+            return BadRequest( ex );
+         }
+      }
    }
 }
